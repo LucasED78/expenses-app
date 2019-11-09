@@ -1,5 +1,6 @@
-import 'package:expenses_app/transaction.dart';
+import 'package:expenses_app/widgets/user_transactions.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(
   MaterialApp(
@@ -15,27 +16,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final List<Transaction> transactions = [
-    Transaction(
-      id: 't1',
-      name: "New shoes",
-      amount: 40.00,
-      date: DateTime.now()
-    ),
-    Transaction(
-      id: 't1',
-      name: "New shoes",
-      amount: 40.00,
-      date: DateTime.now()
-    )
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Expenses"),
         backgroundColor: Colors.deepOrange,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => {},
+          )
+        ],
+        centerTitle: true,
       ),
       body: Column(
         children: <Widget>[
@@ -45,11 +38,15 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("CHART!!"),
             ),
           ),
-          Column(children: transactions.map<Widget>(
-            (tx) => Card(child: Text(tx.name))
-          ).toList())
+          UserTransactions()
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add_circle_outline),
+        onPressed: () => {},
+        tooltip: "adiciona coisa nova",
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
