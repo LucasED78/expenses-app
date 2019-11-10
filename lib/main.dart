@@ -1,10 +1,36 @@
-import 'package:expenses_app/widgets/user_transactions.dart';
+import 'package:expenses_app/models/transaction.dart';
+import 'package:expenses_app/widgets/new_transactions.dart';
+import 'package:expenses_app/widgets/transactions_list.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 void main() => runApp(
   MaterialApp(
     home: MyHomePage(),
+    theme: ThemeData(
+      primarySwatch: Colors.orange,
+      accentColor: Colors.lightGreen,
+      iconTheme: IconThemeData(color: Colors.white),
+      appBarTheme: AppBarTheme(
+        textTheme: TextTheme(
+          title: TextStyle(color: Colors.white, 
+          fontFamily: 'OpenSans',
+          fontWeight: FontWeight.bold,
+          fontSize: 20)
+        )
+      ),
+      textTheme: TextTheme(
+        subtitle: TextStyle(
+          fontFamily: "QuickSand",
+          color: Colors.grey,
+          fontSize: 16
+        ),
+        title: TextStyle(
+          fontFamily: "OpenSang",
+          color: Colors.black,
+          fontSize: 18
+        )
+      )
+    ),
   )
 );
 
@@ -15,17 +41,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> transactions = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Expenses"),
-        backgroundColor: Colors.deepOrange,
+        title: Text("Expenses", 
+          style: TextStyle(color: Colors.white),),
+        backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () => {},
+            onPressed: () => _showModal(context),
           )
         ],
         centerTitle: true,
@@ -38,15 +66,37 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("CHART!!"),
             ),
           ),
-          UserTransactions()
+          TransactionList(transactions)
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add_circle_outline),
-        onPressed: () => {},
+        onPressed: () => _showModal(context),
         tooltip: "adiciona coisa nova",
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  Future<Widget> _showModal(BuildContext ctx){
+    return showModalBottomSheet(
+      context: ctx,
+      builder: (context){
+        return NewTransactions(_addTransaction);
+      }
+    );
+  }
+
+  void _addTransaction(String text, double amount){
+    Transaction newTx = Transaction(
+      id: DateTime.now().toString(),
+      name: text,
+      amount: amount,
+      date: DateTime.now()
+    );
+
+    setState(() {
+      transactions.add(newTx);
+    });
   }
 }
