@@ -21,31 +21,51 @@ class NewTransactions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Card(
-          child: TextField(
-            decoration: const InputDecoration(
-              labelText: "name"
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: <Widget>[
+          Card(
+            child: TextField(
+              decoration: const InputDecoration(
+                labelText: "name"
+              ),
+              controller: titleController,
+              onSubmitted: (_) => _submitTransaction(),
             ),
-            controller: titleController,
-            onSubmitted: (_) => _submitTransaction(),
           ),
-        ),
-        Card(
-          child: TextField(
-            decoration: const InputDecoration(
-              labelText: "amount"
+          Card(
+            child: TextField(
+              decoration: const InputDecoration(
+                labelText: "amount"
+              ),
+              controller: amountController,
+              onSubmitted: (_) => _submitTransaction(),
             ),
-            controller: amountController,
-            onSubmitted: (_) => _submitTransaction(),
           ),
-        ),
-        FlatButton(
-          child: const Text("Add Transaction", style: TextStyle(color: Colors.orange)),
-          onPressed: _submitTransaction,
-        )
-      ],
+          SizedBox(
+            height: 40,
+            child: Row(
+              children: <Widget>[
+                Text("No date chosen"),
+                FlatButton(
+                  child: Text("Chose date", style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  onPressed: () => {},
+                )
+              ],
+            ),
+          ),
+          RaisedButton(
+            child: Text("Add Transaction", style: Theme.of(context).textTheme.button),
+            color: Theme.of(context).buttonColor,
+            onPressed: _submitTransaction,
+          )
+        ],
+      ),
     );
   }
 }

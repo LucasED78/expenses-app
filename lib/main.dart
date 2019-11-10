@@ -1,4 +1,5 @@
 import 'package:expenses_app/models/transaction.dart';
+import 'package:expenses_app/widgets/chart.dart';
 import 'package:expenses_app/widgets/new_transactions.dart';
 import 'package:expenses_app/widgets/transactions_list.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,12 @@ void main() => runApp(
           fontFamily: "OpenSang",
           color: Colors.black,
           fontSize: 18
+        ),
+        button: TextStyle(
+          color: Colors.white,
         )
-      )
+      ),
+      buttonColor: Colors.orange
     ),
   )
 );
@@ -42,6 +47,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> transactions = [];
+
+  List<Transaction> get _recentTransactions {
+    return transactions.where((tx){
+      return tx.date.isAfter(
+        DateTime.now().subtract(Duration(days: 7))
+      );
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: <Widget>[
-          Container(
-            width: double.infinity,
-            child: Card(
-              child: Text("CHART!!"),
-            ),
-          ),
+          Chart(_recentTransactions),
           TransactionList(transactions)
         ],
       ),

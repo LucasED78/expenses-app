@@ -26,34 +26,19 @@ class TransactionList extends StatelessWidget {
         itemCount: _transactions.length,
         itemBuilder: (builder, index){
           return Card(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  child: Text(_transactions[index].amount.toStringAsFixed(2),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Theme.of(context).accentColor),
-                  ),
-                  decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Theme.of(context).accentColor,
-                      width: 2
-                    )
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(_transactions[index].name,
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                    Text(DateFormat('dd/MM/yyyy').format(_transactions[index].date),
-                      style: Theme.of(context).textTheme.subtitle,
-                    )
-                  ],
+            elevation: 5,
+            margin: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+            child: ListTile(
+              leading: Padding(
+                padding: EdgeInsets.all(6),
+                child: CircleAvatar(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  child: FittedBox(child: Text(_transactions[index].amount.toStringAsFixed(2))),
+                  foregroundColor: Colors.white,
                 )
-              ],
+              ),
+              title: Text(_transactions[index].name, style: Theme.of(context).textTheme.title),
+              subtitle: Text(_transactions[index].amount.toStringAsFixed(2), style: Theme.of(context).textTheme.subtitle),
             ),
           );
         }
