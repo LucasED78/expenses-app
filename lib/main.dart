@@ -11,6 +11,7 @@ void main() => runApp(
       primarySwatch: Colors.orange,
       accentColor: Colors.lightGreen,
       iconTheme: IconThemeData(color: Colors.white),
+      errorColor: Colors.red,
       appBarTheme: AppBarTheme(
         textTheme: TextTheme(
           title: TextStyle(color: Colors.white, 
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           Chart(_recentTransactions),
-          TransactionList(transactions)
+          TransactionList(transactions, _deleteTransaction)
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -95,16 +96,22 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _addTransaction(String text, double amount){
+  void _addTransaction(String text, double amount, DateTime date){
     Transaction newTx = Transaction(
       id: DateTime.now().toString(),
       name: text,
       amount: amount,
-      date: DateTime.now()
+      date: date
     );
 
     setState(() {
       transactions.add(newTx);
+    });
+  }
+
+  void _deleteTransaction(String id){
+    setState(() {
+      transactions.removeWhere((tx) => tx.id == id);
     });
   }
 }

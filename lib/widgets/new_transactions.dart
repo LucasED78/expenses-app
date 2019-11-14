@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class NewTransactions extends StatelessWidget {
+class NewTransactions extends StatefulWidget {
 
   final Function _addNewTransaction;
 
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
-
 
   NewTransactions(this._addNewTransaction);
+
+  @override
+  _NewTransactionsState createState() => _NewTransactionsState();
+}
+
+class _NewTransactionsState extends State<NewTransactions> {
+  final titleController = TextEditingController();
+
+  final amountController = TextEditingController();
+
+  DateTime _selectedDate;
 
   void _submitTransaction(){
     final enteredTitle = titleController.text;
@@ -16,7 +25,23 @@ class NewTransactions extends StatelessWidget {
 
     if (enteredTitle.isEmpty || enteredAmount < 0) return;
 
-    _addNewTransaction(enteredTitle, enteredAmount);
+    widget._addNewTransaction(enteredTitle, enteredAmount, _selectedDate);
+  }
+
+  void _presentDatePicker(){
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2019),
+      lastDate: DateTime.now(),
+    ).then((DateTime pickedDate){
+      if (pickedDate != null){
+        setState(() {
+          _selectedDate = pickedDate;
+        });
+      }
+      else return;
+    });
   }
 
   @override
@@ -47,14 +72,17 @@ class NewTransactions extends StatelessWidget {
             height: 40,
             child: Row(
               children: <Widget>[
-                Text("No date chosen"),
+                Text(
+                  _selectedDate == null ? "No date chosen" : DateFormat("dd/MM/yyyy").format(_selectedDate)
+                ),
                 FlatButton(
-                  child: Text("Chose date", style: TextStyle(
+                  child: Text("Chose data", 
+                    style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold
                     ),
                   ),
-                  onPressed: () => {},
+                  onPressed:_presentDatePicker
                 )
               ],
             ),
