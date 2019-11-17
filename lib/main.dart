@@ -56,9 +56,21 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }).toList();
   }
+  
+  bool _showChart = false;
 
   @override
   Widget build(BuildContext context) {
+
+    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final txList = Container(
+    height: (
+        MediaQuery.of(context).size.height - AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.top) * 0.7,
+      child: TransactionList(transactions, _deleteTransaction),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Expenses", 
@@ -74,8 +86,36 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: <Widget>[
-          Chart(_recentTransactions),
-          TransactionList(transactions, _deleteTransaction)
+          if (isLandscape) Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Show chart"),
+              Switch(
+                value: _showChart,
+                onChanged: (value){
+                  setState(() {
+                    _showChart = value;
+                  });
+                },
+              )
+            ],
+          ),
+          if (isLandscape) _showChart ? Container(
+            height: (
+              MediaQuery.of(context).size.height - AppBar().preferredSize.height -
+              MediaQuery.of(context).padding.top) * 0.7,
+            child: Chart(_recentTransactions)
+          ) : txList,
+
+          if (!isLandscape) Container(
+            height: (
+              MediaQuery.of(context).size.height - AppBar().preferredSize.height -
+              MediaQuery.of(context).padding.top) * 0.3,
+            child: Chart(_recentTransactions)
+          ),
+
+          if (!isLandscape) txList 
+          
         ],
       ),
       floatingActionButton: FloatingActionButton(
