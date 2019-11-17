@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:expenses_app/models/transaction.dart';
 import 'package:expenses_app/widgets/chart.dart';
 import 'package:expenses_app/widgets/new_transactions.dart';
 import 'package:expenses_app/widgets/transactions_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(
@@ -61,18 +64,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+    
 
     final txList = Container(
     height: (
-        MediaQuery.of(context).size.height - AppBar().preferredSize.height -
-        MediaQuery.of(context).padding.top) * 0.7,
+        mediaQuery.size.height - AppBar().preferredSize.height -
+        mediaQuery.padding.top) * 0.7,
       child: TransactionList(transactions, _deleteTransaction),
     );
 
-    return Scaffold(
-      appBar: AppBar(
+    final appBar = Platform.isIOS ? CupertinoNavigationBar(
+      middle: Text("Expenses App"),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () => _showModal(context),
+            child: Icon(CupertinoIcons.add),
+          )
+        ],
+      ),
+    ) : AppBar(
         title: Text("Expenses", 
           style: TextStyle(color: Colors.white),),
         backgroundColor: Theme.of(context).primaryColor,
@@ -83,13 +97,15 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
         centerTitle: true,
-      ),
-      body: Column(
+      );
+
+    final appBody = SafeArea(
+      child: Column(
         children: <Widget>[
           if (isLandscape) Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("Show chart"),
+              Text("Show chart", style: Theme.of(context).textTheme.title,),
               Switch(
                 value: _showChart,
                 onChanged: (value){
@@ -102,15 +118,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           if (isLandscape) _showChart ? Container(
             height: (
-              MediaQuery.of(context).size.height - AppBar().preferredSize.height -
-              MediaQuery.of(context).padding.top) * 0.7,
+              mediaQuery.size.height - AppBar().preferredSize.height -
+              mediaQuery.padding.top) * 0.7,
             child: Chart(_recentTransactions)
           ) : txList,
 
           if (!isLandscape) Container(
             height: (
-              MediaQuery.of(context).size.height - AppBar().preferredSize.height -
-              MediaQuery.of(context).padding.top) * 0.3,
+              mediaQuery.size.height - AppBar().preferredSize.height -
+              mediaQuery.padding.top) * 0.3,
             child: Chart(_recentTransactions)
           ),
 
@@ -118,7 +134,17 @@ class _MyHomePageState extends State<MyHomePage> {
           
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+    );
+      
+     return Platform.isIOS ? CupertinoPageScaffold(
+       child: appBody,
+       navigationBar: CupertinoNavigationBar(
+
+       ),
+     ) : Scaffold(
+      appBar: appBar,
+      body: appBody,
+      floatingActionButton: Platform.isIOS ? Container() : FloatingActionButton(
         child: Icon(Icons.add_circle_outline),
         onPressed: () => _showModal(context),
         tooltip: "adiciona coisa nova",
